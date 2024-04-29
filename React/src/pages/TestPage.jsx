@@ -1,15 +1,33 @@
 import React from "react";
 import { useSocketIO } from "../contexts/socketIOContext.jsx";
 import { useState } from "react";
+import Message from "../components/message/Message.jsx";
+
+function createMsgObj(message, isLink){
+    return {
+        ...message,
+        isLink: isLink,
+        username: "Anonymous"
+    }
+}
 
 function TestPage(){
     const [inputVal, setInputVal] = React.useState("");
+    const [messages, setMessages] = React.useState([]);
     const socket = useSocketIO();
 
     React.useEffect(() => {
 
         socket.on("sendMessage", (message) => {
-            console.log(message);
+            const msg = createMsgObj(message, false);
+
+            setMessages(oldMessages => [...oldMessages, msg]);
+        });
+
+        socket.on("sendLocation", (message) => {
+            const msg = createMsgObj(message, true);
+
+            setMessages(oldMessages => [...oldMessages, msg]);
         })
 
         return () => {
@@ -25,7 +43,9 @@ function TestPage(){
     }
 
     function handleInputClick(){
-        socket.emit("sendMessage", inputVal);
+        socket.emit("sendMessage", inputVal, () => {
+            console.log("Message delivered!");
+        });
 
         setInputVal("");
     }
@@ -41,12 +61,19 @@ function TestPage(){
                 longitude: position.coords.longitude
             }
 
-            socket.emit("sendLocation", data);
+            socket.emit("sendLocation", data, () => {
+                console.log("Location shared!");
+            });
         });
     }
 
     return(
         <>
+            {messages.map( (element, index) => {
+                return <Message key={index} msg={element} />
+            })}
+
+            <br />
             <input type="text" name="input" value={inputVal} onChange={handleInputChange} />
             <button onClick={handleInputClick}>Send message</button>
             <br />

@@ -1,0 +1,28 @@
+.message{
+    box-shadow: 8px 4px 10px -4px rgba(0, 0, 0, 0.5);
+    border: 1px solid grey;
+
+    display: flex;
+    flex-direction: column;
+    
+    padding: 10px;
+    margin-top: 15px;
+    margin-left: 10px;
+
+    max-width: max-content;
+
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+      
+}
+
+.msgAndTime{
+    display: flex;
+    justify-content: space-between;
+}
+
+.time{
+    margin-left: 5px;
+}
